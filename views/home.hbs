@@ -1,28 +1,34 @@
 <!-- Begin page content -->
 <div class="row">
 <div class="col-md-4">   
-<form method="post" id="addUserForm" action="/users/add">
+<form method="post" id="addBookForm" action="/books/add">
   <div class="form-group row">
     <label for="inputName" class="col-sm-2 col-form-label">Name</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputName" name="name" placeholder="Name">
+      <input type="text" class="form-control" id="inputName" name="name" placeholder="Hamlet">
     </div>
   </div>
   <div class="form-group row">
-    <label for="inputAddress" class="col-sm-2 col-form-label">Address</label>
+    <label for="inputAuthor" class="col-sm-2 col-form-label">Author</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputAddress" name="address" placeholder="1234 Main St">
+      <input type="text" class="form-control" id="inputAuthor" name="author" placeholder="William Shakespeare">
     </div>
   </div>
    <div class="form-group row">
-    <label for="inputSalary" class="col-sm-2 col-form-label">Salary</label>
+    <label for="inputYear" class="col-sm-2 col-form-label">Year</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputSalary" name="salary" placeholder="50000">
+      <input type="text" class="form-control" id="inputYear" name="year" placeholder="1601">
+    </div>
+  </div>
+   <div class="form-group row">
+    <label for="inputPages" class="col-sm-2 col-form-label">Pages</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="inputPages" name="pages" placeholder="1024">
     </div>
   </div>
   <div class="form-group row">
     <div class="col-sm-10">
-      <button type="button" id="btnSubmit" class="btn btn-primary">Add User</button>
+      <button type="button" id="btnSubmit" class="btn btn-primary">Add Book</button>
     </div>
   </div>
 </form>
@@ -34,8 +40,9 @@
     <tr>
       <th scope="col">ID</th>
       <th scope="col">Name</th>
-      <th scope="col">Address</th>
-      <th scope="col">Salary</th>
+      <th scope="col">Author</th>
+      <th scope="col">Year</th>
+      <th scope="col">Pages</th>
       <th scope="col">&nbsp;</th>
     </tr>
   </thead>

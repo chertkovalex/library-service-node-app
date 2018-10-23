@@ -1,17 +1,17 @@
 import express from "express";
-import User from "../schema/User"
+import Book from "../schema/Book"
 import mongoose from "mongoose";
 
 const router = express.Router();
 
 router.get("/", (req, res, next) => {
     res.status(200).json({
-        message:"Serving Users on the Endpoint."
+        message:"Serving Books on the Endpoint."
     });   
 });
 
 router.get("/list", (req, res, next) => {
-    User.find({})
+    Book.find({})
         .exec()
         .then(docs => {
             res.status(200).json({
@@ -25,17 +25,18 @@ router.get("/list", (req, res, next) => {
 
 router.post("/add", (req, res, next) => {
 
-    const user = new User({
+    const book = new Book({
         _id: mongoose.Types.ObjectId(),
         name: req.body.name,
-        address:req.body.address,
-        salary: req.body.salary
+        author: req.body.author,
+        year: req.body.year,
+        pages: req.body.pages
     });
 
-    user.save()
+    book.save()
     .then(result => {
         res.status(200).json({
-            docs:[user]
+            docs:[book]
         });
     })
     .catch(err => {
@@ -46,7 +47,7 @@ router.post("/add", (req, res, next) => {
 router.post("/delete", (req, res, next) => {
     const rid = req.body.id;
 
-    User.findById(rid)
+    Book.findById(rid)
         .exec()
         .then(docs => {
             docs.remove();

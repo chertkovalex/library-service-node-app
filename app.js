@@ -4,7 +4,7 @@ import cors from "cors";
 
 import db from "./config/database";
 import hb from "./config/handlebars"
-import users from "./routes/users"
+import books from "./routes/books"
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.use(cors());
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended:false}));
 
-app.use("/users", users);
+app.use("/books", books);
 
 //Home route
 app.get('/', (req, res) => {

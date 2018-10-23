@@ -1,8 +1,8 @@
 $( document ).ready(function() {
 
-    //on page load keep the user list populated------------START
+    //on page load keep the book list populated------------START
     $.ajax({
-        url: "users/list",
+        url: "books/list",
         dataType: "json",
     })
     .done((data) => {
@@ -18,17 +18,17 @@ $( document ).ready(function() {
     });  
     //-------------------------------------------------------END
 
-    //on add user submit the form----------------------------START
+    //on add book submit the form----------------------------START
     $("#btnSubmit").click (() => {
-        $("#addUserForm").submit();
+        $("#addBookForm").submit();
     });
 
-	$(document).on("submit", '#addUserForm', function(event) {
+	$(document).on("submit", '#addBookForm', function(event) {
 		event.preventDefault(); 
 		var $form = $(this);
 		
         $.ajax({
-            url: 'users/add',
+            url: 'books/add',
             data: $form.serializeArray(),
             type: 'POST'
         })
@@ -38,7 +38,7 @@ $( document ).ready(function() {
                 odata.forEach(item => {
                     $('#myTable > tbody:last-child').append(getRowHtml(item));
                 });
-                $('#addUserForm').trigger("reset");
+                $('#addBookForm').trigger("reset");
             }
         })
         .fail((err) => {
@@ -54,7 +54,7 @@ $( document ).ready(function() {
         var row = $(this).parent().parent();
 
         $.ajax({
-            url: 'users/delete',
+            url: 'books/delete',
             data: { id:this.id },
             type: 'POST'
         })
@@ -75,8 +75,9 @@ $( document ).ready(function() {
 function getRowHtml(item) {
     var thtml = getTD(item._id) 
                 + getTD(item.name) 
-                + getTD(item.address) 
-                + getTD(item.salary)
+                + getTD(item.author)
+                + getTD(item.year)
+                + getTD(item.pages)
                 + getDelBtn(item._id);
     thtml = getTR(thtml);
     return thtml;

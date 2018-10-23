@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 mongoose.connect(
-  "mongodb+srv://nodeuser:nodepwd@opencodez-pzgjy.gcp.mongodb.net/test?retryWrites=true",
+  "mongodb://localhost:27017",
     { 
       useNewUrlParser: true
     }
