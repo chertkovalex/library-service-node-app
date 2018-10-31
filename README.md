@@ -9,3 +9,9 @@ Library Service NodeJS App
 4. Start server
    `npm run start`
 5. Open browser `http://localhost:6032`
+
+API
+* Filter Books by Author:
+`http://localhost:6032/books/?author=Aleksey+Tolstoy`
+* Filter Books by Year:
+`http://localhost:6032/books/?year=1856` 

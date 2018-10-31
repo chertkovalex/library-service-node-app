@@ -4,18 +4,22 @@ import mongoose from 'mongoose';
 
 const router = express.Router();
 
+/*
 router.get('/', (req, res, next) => {
   res.status(200).json({
     message: 'Serving Books on the Endpoint.'
   });
 });
+*/
+
+/*
 
 router.get('/list', (req, res, next) => {
   Book.find({})
     .exec()
-    .then(docs => {
+    .then(books => {
       res.status(200).json({
-        docs
+        books
       });
     })
     .catch(err => {
@@ -23,7 +27,7 @@ router.get('/list', (req, res, next) => {
     });
 });
 
-
+*/
 
 router.post('/add', (req, res, next) => {
   const book = new Book({
@@ -38,7 +42,7 @@ router.post('/add', (req, res, next) => {
     .save()
     .then(result => {
       res.status(200).json({
-        docs: [book]
+        books: [book]
       });
     })
     .catch(err => {
@@ -51,8 +55,8 @@ router.post('/delete', (req, res, next) => {
 
   Book.findById(rid)
     .exec()
-    .then(docs => {
-      docs.remove();
+    .then(books => {
+      books.remove();
       res.status(200).json({
         deleted: true
       });
