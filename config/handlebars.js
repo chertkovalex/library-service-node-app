@@ -1,4 +1,4 @@
-import handlebars from 'express-handlebars';
+const handlebars = require('express-handlebars');
 
 const path = __dirname + '/../views/';
 

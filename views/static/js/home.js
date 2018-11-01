@@ -1,7 +1,47 @@
+class SmarterForm extends HTMLFormElement {
+  constructor() {
+    super();
+    this.addEventListener('submit', this.submit);
+  }
+
+  parseAsJson() {
+    return Object.getOwnPropertyNames(this.elements).reduce((data, prop) => {
+      const inputField = this.elements.namedItem(prop);
+      if (inputField) {
+        data[inputField.name] = inputField.value;
+      }
+      return data;
+    }, {});
+  }
+
+  onResponse() {}
+
+  async submit(e) {
+    if (e) {
+      e.preventDefault();
+    }
+    const data = this.parseAsJson();
+    const response = await (await fetch(this.action, {
+      method: this.method || 'GET',
+      body: JSON.stringify(data),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })).json();
+    this.onResponse(response);
+    return response;
+  }
+}
+
+customElements.define('smarter-form', SmarterForm, {
+  extends: 'form'
+});
+
 $(document).ready(function() {
   //on page load keep the book list populated------------START
   $.ajax({
-    url: 'books/',
+    url: 'books',
     dataType: 'json'
   })
     .done(data => {
@@ -22,28 +62,39 @@ $(document).ready(function() {
     $('#addBookForm').submit();
   });
 
-  $(document).on('submit', '#addBookForm', function(event) {
-    event.preventDefault();
-    var $form = $(this);
+  /** @type SmarterForm **/
+  const addBookForm = document.querySelector('#addBookForm');
 
-    $.ajax({
-      url: 'books/add',
-      data: $form.serializeArray(),
-      type: 'POST'
-    })
-      .done(data => {
-        if (data) {
-          var odata = $.parseJSON(JSON.stringify(data.books));
-          odata.forEach(item => {
-            $('#myTable > tbody:last-child').append(getRowHtml(item));
-          });
-          $('#addBookForm').trigger('reset');
-        }
-      })
-      .fail(err => {
-        console.log('Error');
-      });
-  });
+  /** @type HTMLTableElement **/
+  const table = document.querySelector('#myTable');
+
+  addBookForm.onResponse = response => {
+    const tableRTow = getRowHtml(response, true);
+    table.tBodies[0].appendChild(tableRTow);
+  };
+  //
+  // $(document).on('submit', '#addBookForm', function(event) {
+  //   event.preventDefault();
+  //   var $form = $(this);
+  //
+  //   $.ajax({
+  //     url: 'books',
+  //     data: $form.serializeArray(),
+  //     type: 'POST'
+  //   })
+  //     .done(data => {
+  //       if (data) {
+  //         var odata = $.parseJSON(JSON.stringify(data.books));
+  //         odata.forEach(item => {
+  //           $('#myTable > tbody:last-child').append(getRowHtml(item));
+  //         });
+  //         $('#addBookForm').trigger('reset');
+  //       }
+  //     })
+  //     .fail(err => {
+  //       console.log('Error');
+  //     });
+  // });
   //-------------------------------------------------------END
 
   //on click of delete record----------------------------START
@@ -71,7 +122,7 @@ $(document).ready(function() {
   //-------------------------------------------------------END
 });
 
-function getRowHtml(item) {
+function getRowHtml(item, useNative = false) {
   var thtml =
     getTD(item._id) +
     getTD(item.name) +
@@ -79,6 +130,11 @@ function getRowHtml(item) {
     getTD(item.year) +
     getTD(item.pages) +
     getDelBtn(item._id);
+  if (useNative) {
+    const row = document.createElement('tr');
+    row.innerHTML = thtml;
+    return row;
+  }
   thtml = getTR(thtml);
   return thtml;
 }

@@ -1,6 +1,5 @@
-import express from 'express';
-import Book from '../schema/Book';
-import mongoose from 'mongoose';
+const express = require('express');
+const Book = require('../schema/Book');
 
 const router = express.Router();
 
@@ -29,6 +28,7 @@ router.get('/list', (req, res, next) => {
 
 */
 
+/*
 router.post('/add', (req, res, next) => {
   const book = new Book({
     _id: mongoose.Types.ObjectId(),
@@ -49,6 +49,7 @@ router.post('/add', (req, res, next) => {
       console.log(err);
     });
 });
+*/
 
 router.post('/delete', (req, res, next) => {
   const rid = req.body.id;

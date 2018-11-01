@@ -1,4 +1,5 @@
-import Book from '../../schema/Book';
+const mongoose = require('mongoose');
+const Book = require('../../schema/Book');
 
 /**
  * @param books: Array
@@ -59,8 +60,36 @@ const getData = async (req, res) => {
     return res.status(500).json(err);
   }
 };
+/**
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<void>}
+ */
+const addBook = async (req, res, next) => {
+  const { author, name, pages, year } = req.body;
+
+  const newBook = new Book({
+    _id: mongoose.Types.ObjectId(),
+    author,
+    name,
+    pages,
+    year
+  });
+  try {
+    const {_id, author, name, year, pages} = await newBook.save();
+    res.status(200).json({
+      _id, author, name, year, pages
+    });
+  } catch (err) {
+      console.log(err);
+      next(err);
+  }
+};
 
 module.exports = {
+  addBook,
   getBooks,
   getData
 };
