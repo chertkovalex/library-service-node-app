@@ -8,8 +8,8 @@ const get = {
 };
 
 const getData = {
-  query: {
-    identifiers: Joi.array().required()
+  params: {
+    id: Joi.string().required()
   }
 };
 
