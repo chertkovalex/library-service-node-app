@@ -6,7 +6,9 @@ const {
   getBooks,
   getData,
   deleteBook,
-  updateBook
+  updateBook,
+  borrowBook,
+  returnBook
 } = require('./books.controller');
 const validate = require('../../common/validator');
 
@@ -18,5 +20,7 @@ router.route('/').post(validate(schema.addBook), addBook);
 router.route('/').delete(validate(schema.deleteBook), deleteBook);
 router.route('/:id').get(validate(schema.getData), getData);
 router.route('/:id').patch(validate(schema.updateBook), updateBook);
+router.route('/:id/borrow').patch(/*validate(schema.borrowBook),*/ borrowBook);
+router.route('/:id/return').patch(validate(schema.returnBook), returnBook);
 
 module.exports = router;

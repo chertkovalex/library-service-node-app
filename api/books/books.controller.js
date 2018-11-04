@@ -137,11 +137,55 @@ const updateBook = async (req, res, next) => {
     next(err);
   }
 };
+/**
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<void>}
+ */
+const borrowBook = async (req, res, next) => {
+  const date = Date.now();
+  try {
+    const book = await Book.findByIdAndUpdate(
+      req.params.id,
+      { date_borrowed: date },
+      { new: true }
+    );
+    res.status(200).json({ book });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
+/**
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<void>}
+ */
+const returnBook = async (req, res, next) => {
+  const { id } = req.body;
+  try {
+    const book = await Book.findByIdAndUpdate(
+      id,
+      { date_borrowed: null },
+      { new: true }
+    );
+    res.status(200).json({ book });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
 
 module.exports = {
   addBook,
   getBooks,
   getData,
   deleteBook,
-  updateBook
+  updateBook,
+  borrowBook,
+  returnBook
 };

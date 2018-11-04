@@ -83,13 +83,14 @@ $(document).ready(function() {
   //on click of delete record----------------------------START
   $(document).on('click', '.btn-del-record', function(event) {
     //identify the row which we will remove from our table.
+    const id = this.parentElement.id;
     var row = $(this)
       .parent()
       .parent();
 
     $.ajax({
       url: 'books',
-      data: { id: this.id },
+      data: { id },
       type: 'DELETE'
     })
       .done(data => {
@@ -105,7 +106,7 @@ $(document).ready(function() {
   //on click of edit record----------------------------START
   $(document).on('click', '.btn-edit-record', function(event) {
     //identify the row which we will remove from our table.
-    const bookId = this.getAttribute('data-edit-id');
+    const bookId = this.parentElement.id;
 
     $.ajax({
       url: 'books/' + bookId,
@@ -137,6 +138,38 @@ $(document).ready(function() {
     $.ajax({
       url: 'books/' + id,
       data: { id, pages, year },
+      type: 'PATCH'
+    })
+      .done(data => {
+        getFullDataFromServer();
+      })
+      .fail(err => {
+        console.log('Error: ', err);
+      });
+  });
+
+  //on click of borrow record----------------------------START
+  $(document).on('click', '.btn-borrow-book', function(event) {
+    const id = this.parentElement.id;
+
+    $.ajax({
+      url: 'books/' + id + '/borrow',
+      type: 'PATCH'
+    })
+      .done(data => {
+        getFullDataFromServer();
+      })
+      .fail(err => {
+        console.log('Error: ', err);
+      });
+  });
+
+  //on click of return book----------------------------START
+  $(document).on('click', '.btn-return-book', function(event) {
+    const id = this.parentElement.id;
+
+    $.ajax({
+      url: 'books/' + id + '/return',
       type: 'PATCH'
     })
       .done(data => {
@@ -182,15 +215,15 @@ function getTR(val) {
 
 function getActionsCell(val) {
   return (
-    '<td><' +
-    'button type="button" id=' +
-    val +
-    ' class="btn btn-default btn-sm btn-del-record">' +
+    '<td id="' + val + '" >' +
+    '<button type="button" class="btn btn-default btn-sm btn-del-record">' +
     '<span class="fa fa-trash-alt"></span> Delete </button>' +
-    '<button type="button" data-edit-id=' +
-    val +
-    ' class="btn btn-default btn-sm btn-edit-record">' +
+    '<button type="button" class="btn btn-default btn-sm btn-edit-record">' +
     '<span class="fa fa-pencil-alt"></span> Edit </button>' +
+    '<button type="button" class="btn btn-default btn-sm btn-borrow-book">' +
+    '<span class="fa fa-arrow-alt-circle-down"></span> Borrow </button>' +
+    '<button type="button" class="btn btn-default btn-sm btn-return-book">' +
+    '<span class="fa fa-arrow-alt-circle-up"></span> Return </button>' +
     '</td>'
   );
 }

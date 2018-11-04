@@ -30,6 +30,18 @@ const updateBook = {
   }
 };
 
+const borrowBook = {
+  params: {
+    id: Joi.string().required()
+  }
+};
+
+const returnBook = {
+  params: {
+    id: Joi.string().required()
+  }
+};
+
 const deleteBook = {
   body: {
     id: Joi.string().required()
@@ -41,5 +53,7 @@ module.exports = {
   get,
   getData,
   deleteBook,
-  updateBook
+  updateBook,
+  borrowBook,
+  returnBook
 };
