@@ -22,8 +22,24 @@ const addBook = {
   }
 };
 
+const updateBook = {
+  body: {
+    id: Joi.string().required(),
+    pages: Joi.number(),
+    year: Joi.number().required()
+  }
+};
+
+const deleteBook = {
+  body: {
+    id: Joi.string().required()
+  }
+};
+
 module.exports = {
   addBook,
   get,
-  getData
+  getData,
+  deleteBook,
+  updateBook
 };

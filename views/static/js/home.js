@@ -7,7 +7,7 @@ class SmarterForm extends HTMLFormElement {
   parseAsJson() {
     return Object.getOwnPropertyNames(this.elements).reduce((data, prop) => {
       const inputField = this.elements.namedItem(prop);
-      if (inputField) {
+      if (inputField && inputField.value.length > 0) {
         data[inputField.name] = inputField.value;
       }
       return data;
@@ -38,8 +38,7 @@ customElements.define('smarter-form', SmarterForm, {
   extends: 'form'
 });
 
-$(document).ready(function() {
-  //on page load keep the book list populated------------START
+const getFullDataFromServer = () => {
   $.ajax({
     url: 'books',
     dataType: 'json'
@@ -47,6 +46,7 @@ $(document).ready(function() {
     .done(data => {
       if (data) {
         var odata = $.parseJSON(JSON.stringify(data.books));
+          $('#myTable > tbody').empty();
         odata.forEach(item => {
           $('#myTable > tbody:last-child').append(getRowHtml(item));
         });
@@ -55,6 +55,11 @@ $(document).ready(function() {
     .fail(err => {
       console.log('Error');
     });
+};
+
+$(document).ready(function() {
+  //on page load keep the book list populated------------START
+  getFullDataFromServer();
   //-------------------------------------------------------END
 
   //on add book submit the form----------------------------START
@@ -72,29 +77,7 @@ $(document).ready(function() {
     const tableRTow = getRowHtml(response, true);
     table.tBodies[0].appendChild(tableRTow);
   };
-  //
-  // $(document).on('submit', '#addBookForm', function(event) {
-  //   event.preventDefault();
-  //   var $form = $(this);
-  //
-  //   $.ajax({
-  //     url: 'books',
-  //     data: $form.serializeArray(),
-  //     type: 'POST'
-  //   })
-  //     .done(data => {
-  //       if (data) {
-  //         var odata = $.parseJSON(JSON.stringify(data.books));
-  //         odata.forEach(item => {
-  //           $('#myTable > tbody:last-child').append(getRowHtml(item));
-  //         });
-  //         $('#addBookForm').trigger('reset');
-  //       }
-  //     })
-  //     .fail(err => {
-  //       console.log('Error');
-  //     });
-  // });
+
   //-------------------------------------------------------END
 
   //on click of delete record----------------------------START
@@ -105,13 +88,12 @@ $(document).ready(function() {
       .parent();
 
     $.ajax({
-      url: 'books/delete',
+      url: 'books',
       data: { id: this.id },
-      type: 'POST'
+      type: 'DELETE'
     })
       .done(data => {
         if (data) {
-          console.log(data);
           row.remove();
         }
       })
@@ -119,7 +101,59 @@ $(document).ready(function() {
         console.log('Error');
       });
   });
-  //-------------------------------------------------------END
+
+  //on click of edit record----------------------------START
+  $(document).on('click', '.btn-edit-record', function(event) {
+    //identify the row which we will remove from our table.
+    const bookId = this.getAttribute('data-edit-id');
+
+    $.ajax({
+      url: 'books/' + bookId,
+      //  data: { id: this.id },
+      type: 'GET'
+    })
+      .done(data => {
+        if (data && data.book) {
+          Object.keys(data.book).forEach(key => {
+            const inputId =
+              key === '_id'
+                ? 'inputId'
+                : 'input' + key.charAt(0).toUpperCase() + key.slice(1);
+            const input = document.getElementById(inputId);
+            if (input) {
+              input.value = data.book[key];
+            }
+          });
+        }
+      })
+      .fail(err => {
+        console.log('Error: ', err);
+      });
+  });
+  //on click of update record----------------------------START
+  $(document).on('click', '#btnUpdate', function(event) {
+    const { id, pages, year } = addBookForm.parseAsJson();
+
+    $.ajax({
+      url: 'books/' + id,
+      data: { id, pages, year },
+      type: 'PATCH'
+    })
+      .done(data => {
+        getFullDataFromServer();
+      })
+      .fail(err => {
+        console.log('Error: ', err);
+      });
+  });
+
+    //on click of Clear FORM ----------------------------START
+    $(document).on('click', '#btnClear', function(event) {
+       addBookForm.reset();
+    });
+
+
+    //-------------------------------------------------------END
 });
 
 function getRowHtml(item, useNative = false) {
@@ -129,7 +163,7 @@ function getRowHtml(item, useNative = false) {
     getTD(item.author) +
     getTD(item.year) +
     getTD(item.pages) +
-    getDelBtn(item._id);
+    getActionsCell(item._id);
   if (useNative) {
     const row = document.createElement('tr');
     row.innerHTML = thtml;
@@ -146,10 +180,17 @@ function getTR(val) {
   return '<tr>' + val + '</tr>';
 }
 
-function getDelBtn(val) {
+function getActionsCell(val) {
   return (
-    '<td><button type="button" id=' +
+    '<td><' +
+    'button type="button" id=' +
     val +
-    ' class="btn btn-default btn-sm btn-del-record"><span class="fa fa-trash-alt"></span> Delete </button></td>'
+    ' class="btn btn-default btn-sm btn-del-record">' +
+    '<span class="fa fa-trash-alt"></span> Delete </button>' +
+    '<button type="button" data-edit-id=' +
+    val +
+    ' class="btn btn-default btn-sm btn-edit-record">' +
+    '<span class="fa fa-pencil-alt"></span> Edit </button>' +
+    '</td>'
   );
 }

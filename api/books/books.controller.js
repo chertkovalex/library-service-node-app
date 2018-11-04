@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Book = require('../../schema/Book');
 
 /**
+ * @method _filterBooksByQuery
  * @param books: Array
  * @param query: Object
  * @returns Array
@@ -20,6 +21,7 @@ const _filterBooksByQuery = (books, query) => {
 };
 
 /**
+ * @method getBooks
  * @description Get All books or filtered by Author or/and year
  * @param req: Object
  * @param res: Object
@@ -41,6 +43,7 @@ const getBooks = async (req, res) => {
 };
 
 /**
+ * @method getData
  * @description Get specific book by id
  * @param req: Object
  * @param res: Object
@@ -61,7 +64,7 @@ const getData = async (req, res) => {
   }
 };
 /**
- *
+ * @method addBook
  * @param req
  * @param res
  * @param next
@@ -78,18 +81,67 @@ const addBook = async (req, res, next) => {
     year
   });
   try {
-    const {_id, author, name, year, pages} = await newBook.save();
+    const { _id, author, name, year, pages } = await newBook.save();
     res.status(200).json({
-      _id, author, name, year, pages
+      _id,
+      author,
+      name,
+      year,
+      pages
     });
   } catch (err) {
-      console.log(err);
-      next(err);
+    console.log(err);
+    next(err);
+  }
+};
+
+/**
+ * @method deleteBook
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<void>}
+ */
+const deleteBook = async (req, res, next) => {
+  const { id } = req.body;
+  try {
+    const book = await Book.findById(id);
+    book.remove();
+    res.status(200).json({
+      deleted: true
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
+
+/**
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<void>}
+ */
+const updateBook = async (req, res, next) => {
+  const { id, pages, year } = req.body;
+  try {
+    const book = await Book.findByIdAndUpdate(
+      id,
+      { pages, year },
+      { new: true }
+    );
+    res.status(200).json({ book });
+  } catch (err) {
+    console.log(err);
+    next(err);
   }
 };
 
 module.exports = {
   addBook,
   getBooks,
-  getData
+  getData,
+  deleteBook,
+  updateBook
 };

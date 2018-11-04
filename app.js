@@ -5,7 +5,6 @@ const cors = require('cors');
 const api = require('./api');
 require('./config/database');
 const hb = require('./config/handlebars');
-const books = require('./routes/books');
 
 const app = express();
 
@@ -23,7 +22,6 @@ app.use(bodyparser());
 app.use(bodyparser.urlencoded({ extended: false }));
 
 app.use('/', api);
-app.use('/books', books);
 
 //Home route
 app.get('/', (req, res) => {
