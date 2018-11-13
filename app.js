@@ -3,7 +3,6 @@ const bodyparser = require('body-parser');
 const cors = require('cors');
 
 const api = require('./api');
-require('./config/database');
 const hb = require('./config/handlebars');
 
 const app = express();

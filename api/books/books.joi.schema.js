@@ -3,7 +3,10 @@ const Joi = require('joi');
 const get = {
   query: {
     author: Joi.string(),
-    year: Joi.number()
+      limit: Joi.number(),
+      skip: Joi.number(),
+    year: Joi.number(),
+
   }
 };
 
@@ -24,7 +27,7 @@ const addBook = {
 
 const updateBook = {
   body: {
-    id: Joi.string().required(),
+    _id: Joi.string().required(),
     pages: Joi.number(),
     year: Joi.number().required()
   }

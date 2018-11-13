@@ -1,5 +1,21 @@
 const mongoose = require('mongoose');
 const Book = require('../../schema/Book');
+/**
+ *
+ * @param obj
+ * @param keyList
+ * @returns {{}}
+ * @private
+ */
+const _filterObjectByKeys = (obj, keyList) => {
+  return Object.keys(obj).reduce((qp, key) => {
+    if (keyList.includes(key)) {
+      qp[key] = obj[key];
+    }
+
+    return qp;
+  }, {});
+};
 
 /**
  * @method _filterBooksByQuery
@@ -27,15 +43,19 @@ const _filterBooksByQuery = (books, query) => {
  * @param res: Object
  * @returns {Promise<Array>}
  */
+
 const getBooks = async (req, res) => {
   try {
-    const books = await Book.find({});
     const { query } = req;
-    if (Object.keys(query).length > 0) {
-      res.json({ books: _filterBooksByQuery(books, query) });
-    } else {
-      res.json({ books });
-    }
+
+    const queryOptionsNames = ['skip', 'limit', 'sort'];
+    const queryParamsNames = ['author', 'year'];
+
+    const queryParams = _filterObjectByKeys(query, queryParamsNames);
+    const queryOptions = _filterObjectByKeys(query, queryOptionsNames);
+
+    const books = await Book.find(queryParams, {}, queryOptions);
+    res.json({ books });
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
