@@ -38,7 +38,8 @@ const _filterBooksByQuery = (books, query) => {
 
 /**
  * @method getBooks
- * @description Get All books or filtered by Author or/and year
+ * @description Get All books or filtered by Author or/and year + skip/limit
+ * @todo: Sorting
  * @param req: Object
  * @param res: Object
  * @returns {Promise<Array>}
