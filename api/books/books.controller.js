@@ -145,13 +145,14 @@ const deleteBook = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 const updateBook = async (req, res, next) => {
-  const { id, pages, year } = req.body;
+  const { _id, pages, year } = req.body;
   try {
-    const book = await Book.findByIdAndUpdate(
-      id,
+    const book = await Book.findOneAndUpdate(
+      _id,
       { pages, year },
-      { new: true }
-    );
+      { new: true },
+      () => {}
+    ).exec();
     res.status(200).json({ book });
   } catch (err) {
     console.log(err);
