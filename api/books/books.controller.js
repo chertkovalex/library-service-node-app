@@ -148,7 +148,7 @@ const updateBook = async (req, res, next) => {
   const { _id, pages, year } = req.body;
   try {
     const book = await Book.findOneAndUpdate(
-      _id,
+        {_id},
       { pages, year },
       { new: true },
       () => {}
